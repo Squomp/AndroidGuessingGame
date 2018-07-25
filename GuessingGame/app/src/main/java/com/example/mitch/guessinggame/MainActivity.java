@@ -38,8 +38,10 @@ public class MainActivity extends AppCompatActivity {
                     for (int i = 0; i < 10; i++) {
                         Element img = (Element)images.get(i);
                         Element t = (Element)titles.get(i);
-                        games.put(t.text(), img.attr("src"));
+                        String text = t.text().substring(t.text().indexOf(' ') + 1);
+                        games.put(text, img.attr("src"));
                     }
+                    int x = 2;
                 } catch (IOException e) {
                     Log.w("get document error", "error retrieving website");
                 }
