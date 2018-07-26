@@ -1,5 +1,6 @@
 package com.example.mitch.guessinggame;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -60,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
     private Button button4;
     private int counter = 0;
     private Random rand = new Random();
+    private String correctTitle = "";
+    private int score = 0;
+    private Boolean isFirstGuess = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,20 +112,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void switchImage(int index) {
+        isFirstGuess = true;
         List<Integer> usedIndecies = new ArrayList<>();
         usedIndecies.add(index);
         switch (rand.nextInt(4)) {
             case 0:
                 button1.setText(games.get(index).getTitle());
+                correctTitle = games.get(index).getTitle();
                 break;
             case 1:
                 button2.setText(games.get(index).getTitle());
+                correctTitle = games.get(index).getTitle();
                 break;
             case 2:
                 button3.setText(games.get(index).getTitle());
+                correctTitle = games.get(index).getTitle();
                 break;
             case 3:
                 button4.setText(games.get(index).getTitle());
+                correctTitle = games.get(index).getTitle();
                 break;
         }
         if (button1.getText().length() < 1) {
@@ -193,10 +203,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void buttonClicked(View view) {
-        button1.setText("");
-        button2.setText("");
-        button3.setText("");
-        button4.setText("");
-        switchImage(++counter);
+        if (((Button) view).getText().toString() == correctTitle) {
+            if (isFirstGuess) {
+                score++;
+            }
+            Toast.makeText(this, "Correct", Toast.LENGTH_SHORT).show();
+            button1.setText("");
+            button2.setText("");
+            button3.setText("");
+            button4.setText("");
+            counter++;
+            if (counter < 10){
+                switchImage(counter);
+            } else {
+                showScoreActivity();
+            }
+        } else {
+            isFirstGuess = false;
+            Toast.makeText(this, "Incorrect", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showScoreActivity() {
+        Intent intent = new Intent(this, DisplayScoreActivity.class);
+        intent.putExtra("score", score);
+        startActivity(intent);
     }
 }
